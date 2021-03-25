@@ -1,0 +1,49 @@
+package JDBCSelection;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class JDCSelectionDatTester {
+
+	public static void main(String[] args) {
+
+		// jdbc = protocol
+		// mysql = service
+		// localhost:3306 = url and port
+		// stock = conrete database
+		String url = "jdbc:mysql://localhost:3306/stock";
+		String username = "*username hidden*";
+		String password = "*password hidden*";
+
+		// 1. create a connection to DB
+		try (Connection connectionDB = DriverManager.getConnection(url, username, password);
+
+				// 2. create object for commands
+				Statement command = connectionDB.createStatement();) {
+			// 3. create "select" command to print names of all books from table "book"
+			String selectCommand = "select * from book";
+			ResultSet results = command.executeQuery(selectCommand);
+
+			// 4. process the results and print the table in command line
+			int notesNumber = 0;
+
+			while (results.next()) {
+				int id = results.getInt("id");
+				String bookName = results.getString("name");
+				String author = results.getString("author");
+				double price = results.getDouble("price");
+				int quantity = results.getInt("quantity");
+				System.out.println(id + "," + bookName + "," + author + "," + price + "," + quantity);
+				notesNumber++;
+			}
+			System.out.println("Readed:" + notesNumber);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+}
